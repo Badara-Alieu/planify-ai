@@ -1,0 +1,16 @@
+
+C:\Users\Varaco\Desktop\Projects\plancraft\plancraft_saas
+├── api
+|  └── generate.js
+├── package.json
+├── public
+|  └── index.html
+├── README.md
+├── structure.txt
+└── vercel.json
+
+directory: 2 file: 7
+
+
+
+[2K[1G

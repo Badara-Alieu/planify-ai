@@ -1,0 +1,12 @@
+{
+  "name": "plancraft-ai",
+  "version": "1.0.0",
+  "description": "SaaS générateur de business plan propulsé par Claude AI",
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}

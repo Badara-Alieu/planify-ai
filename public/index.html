@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlanCraft AI — Générateur de Business Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;
+    --gold:#e8a83e;--gold2:#f5c96a;--gold3:#c47d1a;
+    --text:#f0ede8;--text2:#9b9890;--text3:#5a5854;
+    --border:#252530;--border2:#353545;
+    --green:#2ec27e;
+  }
+  body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(8px);z-index:100}
+  .logo{font-family:'DM Serif Display',serif;font-size:1.4rem;color:var(--gold);letter-spacing:-0.5px}
+  .logo span{color:var(--text);font-style:italic}
+  .nav-btn{background:var(--gold);color:#1a0f00;border:none;padding:0.5rem 1.2rem;border-radius:6px;font-family:'Sora',sans-serif;font-size:0.85rem;font-weight:600;cursor:pointer}
+  .nav-btn:hover{background:var(--gold2)}
+  .nav-link{color:var(--text2);font-size:0.85rem;background:none;border:none;cursor:pointer;font-family:'Sora',sans-serif}
+  .nav-link:hover{color:var(--text)}
+
+  .view{display:none}
+  .view.active{display:block}
+
+  /* LANDING */
+  .hero{padding:5rem 2rem 4rem;text-align:center;max-width:780px;margin:0 auto}
+  .badge{display:inline-block;background:rgba(232,168,62,0.12);border:1px solid rgba(232,168,62,0.3);color:var(--gold);font-size:0.75rem;padding:0.3rem 0.9rem;border-radius:20px;margin-bottom:1.5rem;letter-spacing:0.5px;text-transform:uppercase}
+  h1{font-family:'DM Serif Display',serif;font-size:clamp(2.2rem,5vw,3.8rem);line-height:1.1;margin-bottom:1.2rem;letter-spacing:-1px}
+  h1 em{color:var(--gold);font-style:italic}
+  .hero-sub{color:var(--text2);font-size:1rem;line-height:1.7;max-width:560px;margin:0 auto 2.5rem}
+  .cta-group{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+  .btn-primary{background:var(--gold);color:#1a0f00;border:none;padding:0.85rem 2rem;border-radius:8px;font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+  .btn-primary:hover{background:var(--gold2);transform:translateY(-1px)}
+  .btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border2);padding:0.85rem 2rem;border-radius:8px;font-family:'Sora',sans-serif;font-size:0.95rem;cursor:pointer;transition:all 0.2s}
+  .btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+  .stats{display:flex;justify-content:center;gap:3rem;padding:3rem 2rem;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);flex-wrap:wrap}
+  .stat-n{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--gold)}
+  .stat-l{font-size:0.8rem;color:var(--text2);margin-top:2px}
+
+  .features{padding:4rem 2rem;max-width:1000px;margin:0 auto}
+  .section-title{font-family:'DM Serif Display',serif;font-size:2rem;text-align:center;margin-bottom:0.5rem}
+  .section-sub{color:var(--text2);text-align:center;font-size:0.9rem;margin-bottom:3rem}
+  .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.5rem}
+  .feat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:border-color 0.2s}
+  .feat-card:hover{border-color:var(--border2)}
+  .feat-icon{width:40px;height:40px;background:rgba(232,168,62,0.1);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem;font-size:18px}
+  .feat-card h3{font-size:1rem;font-weight:600;margin-bottom:0.5rem}
+  .feat-card p{font-size:0.85rem;color:var(--text2);line-height:1.6}
+
+  /* PRICING */
+  .pricing{padding:4rem 2rem;max-width:900px;margin:0 auto}
+  .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.5rem}
+  .price-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.8rem;position:relative}
+  .price-card.featured{border-color:var(--gold)}
+  .price-label{position:absolute;top:-1px;right:1.5rem;background:var(--gold);color:#1a0f00;font-size:0.7rem;font-weight:700;padding:0.25rem 0.8rem;border-radius:0 0 8px 8px;letter-spacing:0.5px;text-transform:uppercase}
+  .price-name{font-size:0.85rem;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.5rem}
+  .price-val{font-family:'DM Serif Display',serif;font-size:2.4rem;margin-bottom:0.3rem}
+  .price-val span{font-size:1rem;color:var(--text2);font-family:'Sora',sans-serif}
+  .price-desc{font-size:0.82rem;color:var(--text2);margin-bottom:1.5rem}
+  .price-features{list-style:none;margin-bottom:1.5rem}
+  .price-features li{font-size:0.83rem;color:var(--text2);padding:0.35rem 0;display:flex;gap:0.5rem;align-items:center}
+  .price-features li::before{content:'';width:5px;height:5px;background:var(--gold);border-radius:50%;flex-shrink:0}
+  .btn-price{width:100%;padding:0.75rem;border-radius:8px;font-family:'Sora',sans-serif;font-size:0.88rem;font-weight:600;cursor:pointer;transition:all 0.2s;border:1px solid var(--border2);background:transparent;color:var(--text)}
+  .btn-price:hover{border-color:var(--gold);color:var(--gold)}
+  .price-card.featured .btn-price{background:var(--gold);color:#1a0f00;border-color:var(--gold)}
+
+  /* APP */
+  .app-container{max-width:860px;margin:0 auto;padding:2rem}
+  .app-header{margin-bottom:2rem}
+  .app-header h2{font-family:'DM Serif Display',serif;font-size:1.8rem;margin-bottom:0.3rem}
+  .app-header p{color:var(--text2);font-size:0.88rem}
+
+  .form-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:2rem;margin-bottom:1.5rem}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+  @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+  .form-group{margin-bottom:1rem}
+  .form-group label{display:block;font-size:0.8rem;color:var(--text2);margin-bottom:0.4rem;text-transform:uppercase;letter-spacing:0.5px}
+  .form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:0.7rem 1rem;font-family:'Sora',sans-serif;font-size:0.9rem;color:var(--text);outline:none;transition:border-color 0.2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+  .form-group textarea{resize:vertical;min-height:110px}
+  .form-group select option{background:var(--bg3)}
+
+  .btn-generate{background:var(--gold);color:#1a0f00;border:none;padding:0.9rem 2.2rem;border-radius:8px;font-family:'Sora',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:0.5rem}
+  .btn-generate:hover:not(:disabled){background:var(--gold2)}
+  .btn-generate:disabled{opacity:0.6;cursor:not-allowed}
+
+  .result-card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;overflow:hidden;margin-top:1.5rem}
+  .result-header{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.8rem;flex-wrap:wrap}
+  .result-dot{width:8px;height:8px;background:var(--green);border-radius:50%;flex-shrink:0}
+  .result-title{font-size:0.85rem;font-weight:600;color:var(--text2)}
+  .result-actions{margin-left:auto;display:flex;gap:0.8rem}
+  .btn-small{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:0.35rem 0.9rem;border-radius:6px;font-family:'Sora',sans-serif;font-size:0.78rem;cursor:pointer}
+  .btn-small:hover{border-color:var(--gold);color:var(--gold)}
+  .btn-pdf{background:rgba(232,168,62,0.1);border-color:var(--gold3);color:var(--gold)}
+  .btn-pdf:hover{background:rgba(232,168,62,0.2)}
+  .result-body{padding:1.5rem;font-size:0.9rem;line-height:1.8;color:var(--text);max-height:700px;overflow-y:auto}
+  .result-body h2{font-family:'DM Serif Display',serif;color:var(--gold);margin:1.2rem 0 0.5rem;font-size:1.2rem}
+  .result-body h3{font-family:'DM Serif Display',serif;color:var(--gold2);margin:1rem 0 0.4rem;font-size:1rem}
+  .result-body strong{color:var(--text);font-weight:600}
+  .result-body p{margin-bottom:0.5rem}
+  .result-body ul{padding-left:1.2rem;margin-bottom:0.5rem}
+
+  .loading-dots{display:inline-flex;gap:4px;align-items:center}
+  .loading-dots span{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:bounce 1.2s infinite}
+  .loading-dots span:nth-child(2){animation-delay:0.2s}
+  .loading-dots span:nth-child(3){animation-delay:0.4s}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+  .error-msg{background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.3);color:#f09090;padding:0.8rem 1rem;border-radius:8px;font-size:0.85rem;margin-top:1rem}
+  footer{padding:2rem;text-align:center;color:var(--text3);font-size:0.8rem;border-top:1px solid var(--border);margin-top:3rem}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Plan<span>Craft</span></div>
+  <div style="display:flex;gap:1rem;align-items:center">
+    <button class="nav-link" onclick="showView('landing')">Accueil</button>
+    <button class="nav-link" onclick="showView('pricing')">Tarifs</button>
+    <button class="nav-btn" onclick="showView('app')">Lancer l'app →</button>
+  </div>
+</nav>
+
+<!-- LANDING -->
+<div id="view-landing" class="view active">
+  <div class="hero">
+    <div class="badge">✦ Propulsé par Claude AI</div>
+    <h1>Génère ton <em>business plan</em><br>en 30 secondes</h1>
+    <p class="hero-sub">Transforme ton idée en un plan d'affaires complet et professionnel. Analyse de marché, stratégie, projections financières — tout, instantanément.</p>
+    <div class="cta-group">
+      <button class="btn-primary" onclick="showView('app')">Commencer gratuitement →</button>
+      <button class="btn-secondary" onclick="showView('pricing')">Voir les tarifs</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div><div class="stat-n">2 400+</div><div class="stat-l">Plans générés</div></div>
+    <div><div class="stat-n">30 sec</div><div class="stat-l">Temps moyen</div></div>
+    <div><div class="stat-n">98%</div><div class="stat-l">Satisfaction</div></div>
+    <div><div class="stat-n">12 pays</div><div class="stat-l">Utilisateurs actifs</div></div>
+  </div>
+  <div class="features">
+    <div class="section-title">Tout ce dont tu as besoin</div>
+    <p class="section-sub">Un outil IA complet pour lancer ton entreprise avec confiance</p>
+    <div class="feat-grid">
+      <div class="feat-card"><div class="feat-icon">📊</div><h3>Analyse de marché</h3><p>Identifie ta cible, tes concurrents et les opportunités de ton secteur.</p></div>
+      <div class="feat-card"><div class="feat-icon">💰</div><h3>Projections financières</h3><p>Revenus estimés, coûts, point mort — un modèle financier réaliste.</p></div>
+      <div class="feat-card"><div class="feat-icon">🎯</div><h3>Stratégie marketing</h3><p>Canaux d'acquisition, messages clés, plan de lancement adapté.</p></div>
+      <div class="feat-card"><div class="feat-icon">⚖️</div><h3>Structure légale</h3><p>Recommandations sur la forme juridique et les étapes de création.</p></div>
+      <div class="feat-card"><div class="feat-icon">📄</div><h3>Export prêt</h3><p>Un document professionnel à présenter à des investisseurs ou une banque.</p></div>
+      <div class="feat-card"><div class="feat-icon">🌍</div><h3>Contexte local</h3><p>Plans adaptés à ton marché — Afrique de l'Ouest, France, international.</p></div>
+    </div>
+  </div>
+  <div style="text-align:center;padding:3rem 2rem;background:var(--bg2);border-top:1px solid var(--border)">
+    <div class="section-title">Prêt à lancer ton projet ?</div>
+    <p style="color:var(--text2);font-size:0.9rem;margin:0.8rem 0 2rem">Rejoins des centaines d'entrepreneurs qui ont déjà généré leur plan avec PlanCraft.</p>
+    <button class="btn-primary" onclick="showView('app')">Générer mon business plan maintenant →</button>
+  </div>
+  <footer>© 2025 PlanCraft AI · contact@plancraft.ai</footer>
+</div>
+
+<!-- PRICING -->
+<div id="view-pricing" class="view">
+  <div class="pricing">
+    <div class="section-title">Tarifs simples et transparents</div>
+    <p class="section-sub">Commence gratuitement, monte en puissance quand tu en as besoin.</p>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-val">Gratuit <span>/mois</span></div>
+        <div class="price-desc">Pour tester l'outil</div>
+        <ul class="price-features">
+          <li>3 plans par mois</li>
+          <li>Sections essentielles</li>
+          <li>Export texte</li>
+        </ul>
+        <button class="btn-price" onclick="showView('app')">Commencer</button>
+      </div>
+      <div class="price-card featured">
+        <div class="price-label">Populaire</div>
+        <div class="price-name">Pro</div>
+        <div class="price-val">100 000 <span>GNF/mois</span></div>
+        <div class="price-desc">Pour entrepreneurs sérieux</div>
+        <ul class="price-features">
+          <li>Plans illimités</li>
+          <li>Analyse financière détaillée</li>
+          <li>Export PDF professionnel</li>
+          <li>Personnalisation avancée</li>
+          <li>Support prioritaire</li>
+        </ul>
+        <button class="btn-price" onclick="showView('app')">Choisir Pro</button>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Agence</div>
+        <div class="price-val">300 000 <span>GNF/mois</span></div>
+        <div class="price-desc">Pour cabinets et consultants</div>
+        <ul class="price-features">
+          <li>5 comptes utilisateurs</li>
+          <li>Marque blanche</li>
+          <li>Accès API</li>
+          <li>Tableau de bord client</li>
+        </ul>
+        <button class="btn-price" onclick="showView('app')">Contacter</button>
+      </div>
+    </div>
+  </div>
+  <footer>© 2025 PlanCraft AI · contact@plancraft.ai</footer>
+</div>
+
+<!-- APP -->
+<div id="view-app" class="view">
+  <div class="app-container">
+    <div class="app-header">
+      <h2>Générateur de Business Plan</h2>
+      <p>Décris ton idée et laisse l'IA construire ton plan complet</p>
+    </div>
+    <div class="form-card">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Nom de l'entreprise</label>
+          <input type="text" id="f-name" placeholder="Ex: FreshMarket Guinée">
+        </div>
+        <div class="form-group">
+          <label>Secteur d'activité</label>
+          <select id="f-sector">
+            <option value="">Sélectionner...</option>
+            <option>Commerce & Distribution</option>
+            <option>Agriculture & Agroalimentaire</option>
+            <option>Technologie & Digital</option>
+            <option>Services aux entreprises</option>
+            <option>Santé & Bien-être</option>
+            <option>Éducation & Formation</option>
+            <option>Transport & Logistique</option>
+            <option>Hôtellerie & Restauration</option>
+            <option>Finance & Fintech</option>
+            <option>Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Pays / Marché cible</label>
+          <input type="text" id="f-market" placeholder="Ex: Guinée, Afrique de l'Ouest">
+        </div>
+        <div class="form-group">
+          <label>Budget de démarrage estimé</label>
+          <select id="f-budget">
+            <option>Moins de 5 000 USD</option>
+            <option>5 000 – 20 000 USD</option>
+            <option>20 000 – 100 000 USD</option>
+            <option>Plus de 100 000 USD</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Décris ton idée de business</label>
+        <textarea id="f-idea" placeholder="Explique ton concept, le problème que tu résous, tes clients cibles, et ce qui te différencie..."></textarea>
+      </div>
+      <button class="btn-generate" id="btn-gen" onclick="generatePlan()">
+        <span id="btn-text">✦ Générer mon business plan</span>
+        <span id="btn-loading" style="display:none"><span class="loading-dots"><span></span><span></span><span></span></span></span>
+      </button>
+      <div id="error-area"></div>
+    </div>
+    <div id="result-area" style="display:none">
+      <div class="result-card">
+        <div class="result-header">
+          <div class="result-dot"></div>
+          <div class="result-title" id="result-title">Business Plan généré</div>
+          <div class="result-actions">
+            <button class="btn-small" onclick="copyResult()">Copier</button>
+            <button class="btn-small btn-pdf" id="btn-pdf" onclick="exportPDF()">⬇ Télécharger PDF</button>
+            <button class="btn-small" onclick="resetForm()">Nouveau plan</button>
+          </div>
+        </div>
+        <div class="result-body" id="result-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showView(v){
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+async function generatePlan(){
+  const name=document.getElementById('f-name').value.trim();
+  const sector=document.getElementById('f-sector').value;
+  const market=document.getElementById('f-market').value.trim();
+  const budget=document.getElementById('f-budget').value;
+  const idea=document.getElementById('f-idea').value.trim();
+  const errArea=document.getElementById('error-area');
+  errArea.innerHTML='';
+
+  if(!name||!idea){
+    errArea.innerHTML='<div class="error-msg">Merci de renseigner le nom de l\'entreprise et la description de l\'idée.</div>';
+    return;
+  }
+
+  const btn=document.getElementById('btn-gen');
+  btn.disabled=true;
+  document.getElementById('btn-text').style.display='none';
+  document.getElementById('btn-loading').style.display='block';
+  document.getElementById('result-area').style.display='none';
+
+  try{
+    // Appel vers notre backend sécurisé /api/generate
+    const res=await fetch('/api/generate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({name,sector,market,budget,idea})
+    });
+    const data=await res.json();
+
+    if(!res.ok){
+      throw new Error(data.error||'Erreur inconnue');
+    }
+
+    document.getElementById('result-title').textContent='Business Plan — '+name;
+    document.getElementById('result-body').innerHTML=renderMarkdown(data.result);
+    document.getElementById('result-area').style.display='block';
+    document.getElementById('result-area').scrollIntoView({behavior:'smooth'});
+    window._resultText=data.result;
+  }catch(e){
+    errArea.innerHTML='<div class="error-msg">Erreur : '+e.message+'</div>';
+  }
+
+  btn.disabled=false;
+  document.getElementById('btn-text').style.display='block';
+  document.getElementById('btn-loading').style.display='none';
+}
+
+function renderMarkdown(text){
+  return text
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^\* (.+)$/gm,'<li>$1</li>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/^([^<].+)$/gm,'<p>$1</p>');
+}
+
+function copyResult(){
+  if(window._resultText){
+    navigator.clipboard.writeText(window._resultText).then(()=>{
+      const b=event.target;
+      b.textContent='✓ Copié!';
+      setTimeout(()=>b.textContent='Copier',2000);
+    });
+  }
+}
+
+async function exportPDF(){
+  const btn=document.getElementById('btn-pdf');
+  const companyName=document.getElementById('result-title').textContent.replace('Business Plan — ','');
+  btn.textContent='⏳ Génération...';
+  btn.disabled=true;
+
+  // Créer un élément HTML propre pour le PDF (fond blanc, texte noir)
+  const pdfContent=document.createElement('div');
+  pdfContent.style.cssText='font-family:Georgia,serif;padding:40px;color:#1a1a1a;background:#fff;max-width:800px;margin:0 auto';
+  pdfContent.innerHTML=`
+    <div style="border-bottom:3px solid #e8a83e;padding-bottom:20px;margin-bottom:30px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:#888;margin-bottom:6px">Business Plan Professionnel</div>
+      <h1 style="font-size:28px;font-weight:700;color:#1a1a1a;margin:0 0 6px">${companyName}</h1>
+      <div style="font-size:12px;color:#888">Généré par PlanCraft AI · ${new Date().toLocaleDateString('fr-FR',{year:'numeric',month:'long',day:'numeric'})}</div>
+    </div>
+    <div style="font-size:14px;line-height:1.9;color:#2a2a2a">
+      ${document.getElementById('result-body').innerHTML
+        .replace(/<h2>/g,'<h2 style="font-size:18px;font-weight:700;color:#e8a83e;margin:28px 0 10px;border-left:4px solid #e8a83e;padding-left:12px">')
+        .replace(/<h3>/g,'<h3 style="font-size:15px;font-weight:600;color:#333;margin:18px 0 8px">')
+        .replace(/<strong>/g,'<strong style="color:#1a1a1a">')
+        .replace(/<p>/g,'<p style="margin:0 0 10px">')
+      }
+    </div>
+    <div style="margin-top:40px;padding-top:15px;border-top:1px solid #eee;font-size:10px;color:#aaa;text-align:center">
+      Document confidentiel · Généré par PlanCraft AI · plancraft-ai.vercel.app
+    </div>
+  `;
+
+  const opt={
+    margin:[10,10,10,10],
+    filename:`BusinessPlan_${companyName.replace(/\s+/g,'-')}.pdf`,
+    image:{type:'jpeg',quality:0.98},
+    html2canvas:{scale:2,useCORS:true},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}
+  };
+
+  try{
+    await html2pdf().set(opt).from(pdfContent).save();
+  }catch(e){
+    alert('Erreur lors de la génération du PDF. Essaie le bouton "Copier" à la place.');
+  }
+
+  btn.textContent='⬇ Télécharger PDF';
+  btn.disabled=false;
+}
+
+function resetForm(){
+  document.getElementById('result-area').style.display='none';
+  document.getElementById('f-name').value='';
+  document.getElementById('f-idea').value='';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
