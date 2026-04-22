@@ -45,7 +45,7 @@ Sois précis, concret et adapté au contexte du marché indiqué. Inclus des chi
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-opus-4-5",
+        model: "claude-3-haiku-20240307",
         max_tokens: 2000,
         messages: [{ role: "user", content: prompt }],
       }),
@@ -58,7 +58,7 @@ Sois précis, concret et adapté au contexte du marché indiqué. Inclus des chi
     }
 
     const data = await response.json();
-    const text = data.content.map((b) => b.text || "").join("");
+    const text = data.content?.map((b) => b.text || "").join("") || "Erreur génération";
     return res.status(200).json({ result: text });
   } catch (error) {
     console.error("Server error:", error);
