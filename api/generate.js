@@ -45,7 +45,7 @@ Sois précis, concret et adapté au contexte du marché indiqué. Inclus des chi
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        //model: "claude-3-haiku-20240307",
+        ///model: "claude-3-haiku-20240307",
         model: "claude-3-5-sonnet-20241022",
         max_tokens: 2000,
         messages: [{ role: "user", content: prompt }],
