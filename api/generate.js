@@ -59,7 +59,7 @@ Sois précis, concret et adapté au contexte du marché indiqué. Inclus des chi
 
     const data = await response.json();
     const text = data.content?.map((b) => b.text || "").join("") || "Erreur génération";
-    return res.status(200).json({ result: text });
+    return res.status(200).json({ result: text }); 
   } catch (error) {
     console.error("Server error:", error);
     return res.status(500).json({ error: "Erreur serveur interne." });
