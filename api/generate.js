@@ -37,6 +37,8 @@ Génère un business plan structuré avec les sections suivantes (utilise des ti
 Sois précis, concret et adapté au contexte du marché indiqué. Inclus des chiffres et estimations réalistes.`;
 
   try {
+    console.log("API KEY:", process.env.ANTHROPIC_API_KEY);
+    console.log("KEY:", process.env.ANTHROPIC_API_KEY);
     const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
